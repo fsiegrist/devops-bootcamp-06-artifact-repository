@@ -18,7 +18,7 @@ Install Java Version 8 (needed for Nexus):
 Download and unpack the latest Nexus version into the /opt folder:
 - `cd /opt`
 - `wget https://download.sonatype.com/nexus/3/latest-unix.tar.gz`
-- `tar -zxvf latest-unix.tar.gz` => tow folders nexus-3.46.0-01 and sonatype-work
+- `tar -zxvf latest-unix.tar.gz` => two folders nexus-3.46.0-01 and sonatype-work
 
 Create a nexus user to be used to run the nexus application:
 - `adduser nexus`
@@ -39,6 +39,8 @@ Check the port on which Nexus is running:
 - `netstat -tlnp` shows that the process with the nexus PID is listening on port 8081
 
 So go to the DigitalOcean admin webpage and add a firewall rule opening the port 8081 for all IP addresses.
+
+Now you can access Nexus in your browser via `http://<droplet-ip-address>:8081`.
 
 </details>
 
