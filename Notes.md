@@ -45,3 +45,14 @@ Now you can access Nexus in your browser via `http://<droplet-ip-address>:8081`.
 </details>
 
 *****
+
+<details>
+<summary>Video: Introduction to Nexus</summary>
+<br />
+
+There is a predefined `admin` user. Its password is stored in `/opt/sonatype-work/nexus3/admin.password`.
+You can log in with this password on the nexus website. You will be prompted to change the password. As soon as you've changed it, the file `/opt/sonatype-work/nexus3/admin.password` will be removed.
+
+</details>
+
+*****
