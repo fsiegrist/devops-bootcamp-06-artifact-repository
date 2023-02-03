@@ -56,3 +56,19 @@ You can log in with this password on the nexus website. You will be prompted to 
 </details>
 
 *****
+
+<details>
+<summary>Video: Repository Types</summary>
+<br />
+
+Log in as admin user and click on the green settings button at the top of the page.
+Click on Repositories. Several repositories are already predefined.
+
+Repository Types:
+- Proxy: Repository that is linked to a remote repository, e.g. maven-central. Nexus acts as a cache between the client retrieving an artifact and the linked remote repository.
+- Hosted: Pimary storage to push your artifacts and components to, e.g. maven-releases, maven-snapshots. They have integrated version policies for the specific type, e.g. release-versions or snapshot-versions. This type can also be used to store third-party-libraries, that are not available in public repositories.
+- Group: Multiple repositories of different types can be grouped together making them accessible via one single endpoint.
+
+</details>
+
+*****
