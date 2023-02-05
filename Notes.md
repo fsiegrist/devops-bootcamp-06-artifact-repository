@@ -72,3 +72,109 @@ Repository Types:
 </details>
 
 *****
+
+<details>
+<summary>Video: Publish Artifact to Repository</summary>
+<br />
+
+In order to allow Maven or Gradle to upload build artifacts to the Nexus repository, we have to create a Nexus user and give it the resquired privileges.
+
+**Create a Nexus user:**
+
+Click on the settings button, open the Security section on the left an click on Users and then on the button "Create local user". Fill in the form. Choose the nx-anonymous role for the moment.
+
+Now click on Roles on the left side and then on the button "Create role" in the top right corner. Now you can grant the least amount of privileges a user with this role must have to fullfill its tasks. The view-privileges are for browsing, adding, deleting etc. artifacts. The privilege nx-repository-view-maven2-*-* allows all actions on all maven-repositories (proxy, hosted). Add the requires privileges to the role and save it.
+
+Now go back to the users and open the just created user. Assign it the new role and remove the role nx-anonymous.
+
+**Configure Gradle for Nexus:**
+
+See [Gradle Documentation](https://docs.gradle.org/7.6/userguide/publishing_setup.html)
+
+Add the following to the build.gradle file:
+
+```groovy
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+version '1.0.0-SNAPSHOT'
+
+publishing {
+    publications { // what do we want to publish
+        maven(MavenPublication) {
+            artifact("build/libs/my-app-$version" + ".jar") {
+                extension 'jar'
+            }
+        }
+    }
+    repositories { // where do we want to publish to
+        maven {
+            name 'nexus'
+            def releasesRepoUrl = 'http://139.59.136.189:8081/repository/maven-releases/'
+            def snapshotsRepoUrl = 'http://139.59.136.189:8081/repository/maven-snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            allowInsecureProtocol = true       // because we use http
+            credentials {
+                username project.repoUser      // to be defined in gradle.properties
+                password project.repoPassword  // to be defined in gradle.properties
+            }
+        }
+    }
+}
+```
+
+To publish the artifact to the Nexus repository (after having built it using `gradlew build`), just execute the command `gradlew publish`.
+
+**Configure Maven for Nexus:**
+
+Add the following to the pom.xml file:
+
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.7</version>
+        </plugin>
+    </plugins>
+</build>
+
+<distributionManagement>
+    <repository>
+        <id>nexus-releases</id>
+        <url>http://139.59.136.189:8081/repository/maven-releases/</url>
+    </repository>
+    <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>http://139.59.136.189:8081/repository/maven-snapshots/</url>
+    </snapshotRepository>
+</distributionManagement>
+```
+
+The credentials are defined in the file ~/.m2/settings.xml:
+
+```xml
+<settings>
+    <servers>
+        <server>
+            <id>nexus-releases</id>
+            <username>...</username>
+            <password>...</password>
+        </server>
+        <server>
+            <id>nexus-snapshots</id>
+            <username>...</username>
+            <password>...</password>
+        </server>
+    </servers>
+</settings>
+```
+
+To publish the artifact to the Nexus repository (after having built it using `mvn package`), just execute the command `mvn deploy`. Setting the version to a SNAPSHOT version or to a release version will be enough to make maven deploy the artifact to the snapshot repository or to the release repository respectively.
+
+</details>
+
+*****
