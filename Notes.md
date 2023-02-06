@@ -79,7 +79,7 @@ Repository Types:
 
 In order to allow Maven or Gradle to upload build artifacts to the Nexus repository, we have to create a Nexus user and give it the resquired privileges.
 
-**Create a Nexus user:**
+**Create a Nexus User:**
 
 Click on the settings button, open the Security section on the left an click on Users and then on the button "Create local user". Fill in the form. Choose the nx-anonymous role for the moment.
 
@@ -174,6 +174,51 @@ The credentials are defined in the file ~/.m2/settings.xml:
 ```
 
 To publish the artifact to the Nexus repository (after having built it using `mvn package`), just execute the command `mvn deploy`. Setting the version to a SNAPSHOT version or to a release version will be enough to make maven deploy the artifact to the snapshot repository or to the release repository respectively.
+
+</details>
+
+*****
+
+<details>
+<summary>Video: Nexus REST API</summary>
+<br />
+
+All REST API calls require the credentials of a user who has been granted the appropriate privileges in the Nexus UI to be passed along.
+
+Get all available repositories:\
+`curl -u user:pwd -X GET 'http://139.59.136.189:8081/service/rest/v1/repositories'`
+
+Get all artifacts within a specific repository:\
+`curl -u user:pwd -X GET 'http://139.59.136.189:8081/service/rest/v1/components?repository=maven-snapshots'`
+
+Get all assets (files) of a specific component:\
+`curl -u user:pwd -X GET 'http://139.59.136.189:8081/service/rest/v1/components/<component-id>'`
+
+</details>
+
+*****
+
+<details>
+<summary>Video: Blob Store</summary>
+<br />
+
+Blob stores are the store system of Nexus to store all the uploaded binary files. They can use the local file system or a cloud storage. Each blob store can be used by one or multiple repositories or repository groups.
+
+Blob stores using the local file system can be found in the folder `/opt/sonatype-work/nexus3/blobs`.
+
+When Nexus is installed there is one blob store created called `default`. New blob stores can be created in the Nexus UI. Be aware that blob stores can't be modified (e.g. give more space) and as long as a blob store is used by at least one repository it can't be deleted. A repository cannot be split over multiple blob stores. And once a repository is assigned to a blob store, you cannot assing it to another blob store. So when creating a new blob store, you have to carefully consider how to configure it.
+
+</details>
+
+*****
+
+<details>
+<summary>Video: Components vs Assets</summary>
+<br />
+
+Each component (java-app) consists of one or more assets (java-app-1.0-20230204.231003-10.jar, java-app-1.0-20230204.231003-10.pom, java-app-1.0-20230204.231003-10.pom.sha512, etc.).
+
+In JAR repositories each component has its own assets. Assets belong to exactly one component version. In Docker repositories however, assets are given a unique ID and can be shared among different components, because components represent Docker images and assets represent image layers.
 
 </details>
 
