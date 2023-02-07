@@ -183,6 +183,8 @@ To publish the artifact to the Nexus repository (after having built it using `mv
 <summary>Video: Nexus REST API</summary>
 <br />
 
+Detailed information can be found in the [Nexus 3 Documentation](https://help.sonatype.com/repomanager3/integrations/rest-and-integration-api).
+
 All REST API calls require the credentials of a user who has been granted the appropriate privileges in the Nexus UI to be passed along.
 
 Get all available repositories:\
@@ -202,6 +204,8 @@ Get all assets (files) of a specific component:\
 <summary>Video: Blob Store</summary>
 <br />
 
+Detailed information can be found in the [Nexus 3 Documentation](https://help.sonatype.com/repomanager3/nexus-repository-administration/repository-management/configuring-blob-stores).
+
 Blob stores are the store system of Nexus to store all the uploaded binary files. They can use the local file system or a cloud storage. Each blob store can be used by one or multiple repositories or repository groups.
 
 Blob stores using the local file system can be found in the folder `/opt/sonatype-work/nexus3/blobs`.
@@ -219,6 +223,24 @@ When Nexus is installed there is one blob store created called `default`. New bl
 Each component (java-app) consists of one or more assets (java-app-1.0-20230204.231003-10.jar, java-app-1.0-20230204.231003-10.pom, java-app-1.0-20230204.231003-10.pom.sha512, etc.).
 
 In JAR repositories each component has its own assets. Assets belong to exactly one component version. In Docker repositories however, assets are given a unique ID and can be shared among different components, because components represent Docker images and assets represent image layers.
+
+</details>
+
+*****
+
+<details>
+<summary>Video: Cleanup Policies and Scheduled Tasks</summary>
+<br />
+
+Detailed information can be found in the Nexus 3 documentation on [Cleanup Policies](https://help.sonatype.com/repomanager3/nexus-repository-administration/repository-management/cleanup-policies) and [Tasks](https://help.sonatype.com/repomanager3/nexus-repository-administration/tasks).
+
+Cleanup policies can be defined to cleanup no longer used components. When a policy has been defined, it can be previewed to check, whether the defined rules to not accidently delete components.
+
+Once the policy definition is ok and the policy is saved, it has to be associated to a repository in order to become effective. This is done in the repository configuration section.
+
+The policies are run by a scheduled task (cleanup service) and just mark the components to be deleted. The components won't be visible in the repository but the blob store still contains the data. In order to delete the assets physically from the disk, you have to create a scheduled task of type "Admin - Compact blob store".
+
+To test scheduled tasks, they can be executed manually.
 
 </details>
 
