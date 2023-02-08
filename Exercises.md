@@ -97,6 +97,19 @@ For a Node application you:
 
 **Steps to solve the tasks:**
 
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+Create a new blob store:
+- Go to Settings > Repository > Blob Stores
+- Press the blue 'Create Blob Store' button
+- Choose type 'File'; enter a name for the new blob store (e.g. devops-bootcamp); press the 'Save' button
+
+Create a new repository:
+- Go to Settings > Repository > Repositories and press the 'Create repository' button
+- Select the type/recipe 'npm (hosted)'
+- Enter a name for the new repository (e.g. npm)
+- Select the blob store created before ('devops-bootcamp')
+- Leave all other form fields unchanged and press the blue 'Create repository' button
 
 </details>
 
@@ -111,6 +124,25 @@ For a Node application you:
 - You create Nexus user for the project 1 team to have access to this npm repository
 
 **Steps to solve the tasks:**
+
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+Create a new user:
+- Go to Settings > Security > Users
+- Press the 'Create local user' button
+- Enter an ID (e.g. project-1); fill in all other mandatory form fields; select the status 'Active'; assign the role 'nx-anonymous'
+- Press the blue 'Create local user' button
+
+Create a new role:
+- Go to Settings > Security > Roles and press the 'Create Role' button
+- Choose the type 'Nexus role'; enter an id (e.g. nx-npm) and a name;
+- Select the privilege 'nx-repository-view-npm-*-*'
+- Press the 'Save' button
+
+Assign the new role to the new user:
+- Go back to Settings > Security > Users and select the new project-1 user
+- Move the new role 'nx-npm' to the granted roles and remove the previously assigned role 'nx-anonymous'
+- Press the 'Save' button
 
 </details>
 
@@ -135,6 +167,36 @@ npm publish --registry={npm-repo-url-in-nexus} {package-name}
 ```
 
 **Steps to solve the tasks:**
+
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+To enable the npm publish feature, an additional realm has to be added. Go to Settings > Security > Realms, add the 'npm Bearer Token Realm' and save the changes.
+
+Switch to your local machine and create a file ~/.npmrc with the following content:
+```sh
+registry=http://<droplet-ip-address>:8081/repository/npm/
+auth-type=legacy
+```
+
+Open a terminal and execute the following commands:
+
+```sh
+# switch to the directory of the node app in module 5
+cd [/path/to/devops/bootcamp/module-5/git/repo]/app
+
+# create the tar file to be pushed to the Nexus npm repository
+npm install
+npm pack
+
+# login to your Nexus npm repository (registry)
+npm login # enter username (project-1) and password (xxxxx) of the new user
+
+# publish the tar file to the Nexus repository
+npm publish bootcamp-node-project-1.0.0.tgz
+
+# logout
+npm logout
+```
 
 </details>
 
@@ -211,7 +273,7 @@ curl -u {user}:{password} -X GET 'http://{nexus-ip}:8081/service/rest/v1/compone
 ******
 
 <details>
-<summary>Exercise 9: Download from Nexus and start application</summary>
+<summary>Exercise 9: Automate</summary>
 <br />
 
 **Tasks:**
