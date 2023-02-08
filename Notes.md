@@ -175,6 +175,10 @@ The credentials are defined in the file ~/.m2/settings.xml:
 
 To publish the artifact to the Nexus repository (after having built it using `mvn package`), just execute the command `mvn deploy`. Setting the version to a SNAPSHOT version or to a release version will be enough to make maven deploy the artifact to the snapshot repository or to the release repository respectively.
 
+**Use Nexus as an npm Registry - How to publish private npm packages to Nexus**
+
+See this [Blog Post](https://levelup.gitconnected.com/deploying-private-npm-packages-to-nexus-a16722cc8166)
+
 </details>
 
 *****
