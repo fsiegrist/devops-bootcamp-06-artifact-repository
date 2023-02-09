@@ -104,7 +104,7 @@ Create a new blob store:
 - Press the blue 'Create Blob Store' button
 - Choose type 'File'; enter a name for the new blob store (e.g. devops-bootcamp); press the 'Save' button
 
-Create a new repository:
+Create a new npm hosted repository:
 - Go to Settings > Repository > Repositories and press the 'Create repository' button
 - Select the type/recipe 'npm (hosted)'
 - Enter a name for the new repository (e.g. npm)
@@ -213,6 +213,16 @@ For a Java application you:
 
 **Steps to solve the tasks:**
 
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+Create a new maven hosted repository:
+- Go to Settings > Repository > Repositories and press the 'Create repository' button
+- Select the type/recipe 'maven2 (hosted)'
+- Enter a name for the new repository (e.g. maven-repo)
+- Select version policy 'Snapshot'
+- Select the blob store created in exercise 2 ('devops-bootcamp')
+- Leave all other form fields unchanged and press the blue 'Create repository' button
+
 </details>
 
 ******
@@ -223,9 +233,28 @@ For a Java application you:
 
 **Tasks:**
 
-- You create a Nexus user for project 2 team to have access to this maven repository
+- You create a Nexus user for project 2 team to have access to this maven repository.
 
 **Steps to solve the tasks:**
+
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+Create a new user:
+- Go to Settings > Security > Users
+- Press the 'Create local user' button
+- Enter an ID (e.g. project-2); fill in all other mandatory form fields; select the status 'Active'; assign the role 'nx-anonymous'
+- Press the blue 'Create local user' button
+
+Create a new role:
+- Go to Settings > Security > Roles and press the 'Create Role' button
+- Choose the type 'Nexus role'; enter an id (e.g. nx-maven-repo) and a name;
+- Select the privilege 'nx-repository-view-maven2-*-*'
+- Press the 'Save' button
+
+Assign the new role to the new user:
+- Go back to Settings > Security > Users and select the new project-2 user
+- Move the new role 'nx-maven-repo' to the granted roles and remove the previously assigned role 'nx-anonymous'
+- Press the 'Save' button
 
 </details>
 
@@ -243,6 +272,52 @@ You want to test that the project 2 user has the correct access configured and a
 _Use: Java-Gradle application from Build Tools exercises_
 
 **Steps to solve the tasks:**
+
+Open a terminal on your local machine and execute the following commands:
+
+```sh
+# switch to the directory of the java gradle app in module 4
+cd [/path/to/devops/bootcamp/module-4/git/repo]/app
+
+# open the file build.gradle and adjust it as described below
+vim build.gradle
+# 1. add `id 'maven-publish'` to the plugins block
+# 2. append the following publishing block at the end of the file:
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact("build/libs/bootcamp-java-project-$version" + ".jar") {
+                    extension 'jar'
+                }
+            }
+        }
+        repositories {
+            maven {
+                name 'nexus'
+                url = 'http://139.59.136.189:8081/repository/maven-repo/'
+                allowInsecureProtocol = true
+                credentials {
+                    username project.repoUser
+                    password project.repoPassword
+                }
+            }
+        }
+    }
+
+# create a file ./gradle.properties and add the credentials for the project-2 user:
+touch ./gradle.properties
+echo 'repoUser=project-2' > gradle.properties
+echo 'repoPassword=xxxx' >> gradle.properties
+
+# change the gradle version to 7.6 (otherwise the maven-publish plugin does not work together with java version 17 installed on the local machine)
+vim gradle/wrapper/gradle-wrapper.properties # replace gradle-7.0-bin.zip with gradle-7.6-bin.zip
+
+# build the jar file to be pushed to the Nexus maven repository
+./gradlew build
+
+# publish the jar file in the build/libs directory to the Nexus maven repository
+./gradlew publish
+```
 
 </details>
 
@@ -278,7 +353,7 @@ curl -u {user}:{password} -X GET 'http://{nexus-ip}:8081/service/rest/v1/compone
 
 **Tasks:**
 
-You decide to automate the fetching from Nexus and starting the application So you:
+You decide to automate the fetching from Nexus and starting the application. So you:
 - Write a script that fetches the latest version from npm repository. Untar it and run on the server!
 - Execute the script on the droplet
 
