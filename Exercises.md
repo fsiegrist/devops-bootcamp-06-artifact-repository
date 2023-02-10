@@ -343,6 +343,44 @@ curl -u {user}:{password} -X GET 'http://{nexus-ip}:8081/service/rest/v1/compone
 
 **Steps to solve the tasks:**
 
+Open Nexus in your browser via `http://<droplet-ip-address>:8081` and login as admin user.
+
+Create a new user:
+- Go to Settings > Security > Users
+- Press the 'Create local user' button
+- Enter an ID (e.g. all-repo-reader); fill in all other mandatory form fields; select the status 'Active'; assign the roles 'nx-maven-repo' and 'nx-npm'
+- Press the blue 'Create local user' button
+
+SSH into the droplet server created for module 5:\
+`ssh root@<module-5-droplet-ip-address>`
+
+Execute the following command (replace the placeholders in `<...>` with their respective values):\
+`curl -u all-repo-reader:<all-repo-reader-password> -X GET 'http://<nexus-droplet-ip-address>:8081/service/rest/v1/components?repository=npm&sort=version'`
+
+The output contains one component with one asset. Copy its "downloadUrl" value.
+
+Execute one of the following commands (replace the placeholders in `<...>` with their respective values):\
+`curl -u all-repo-reader:<all-repo-reader-password> -X GET '<download-url>' --output bootcamp-node-project-1.0.0.tgz`
+
+or 
+
+`wget --user=all-repo-reader --password=<all-repo-reader-password> <download-url>`
+
+Unpack the downloaded tar file (z=unzip and x=untar):\
+`tar zxvf bootcamp-node-project-1.0.0.tgz`
+
+Unpacking the tar file leaves a folder called `package`. Execute the following commands to start the app:
+```sh
+cd package
+# install dependencies
+npm install
+# run the application in detached mode
+node server.js &
+# the server now listens on port 3000 (ps aux | grep node; netstat -tlnp)
+```
+
+No you can open your browser and visit `http://<module-5-droplet-ip-address>:3000` to see the application in action.
+
 </details>
 
 ******
@@ -371,6 +409,44 @@ wget --http-user={user} --http-password={password} $artifactDownloadUrl
 ```
 
 **Steps to solve the tasks:**
+
+SSH into the droplet server created for module 5:\
+`ssh root@<module-5-droplet-ip-address>`
+
+Create a file called `download-and-start-nodejs-app.sh` with the following content (replace the variable values at the beginning with the values of your setup):
+
+```sh
+#!/bin/bash
+
+# set variables
+repo_user_name=all-repo-reader
+repo_user_password=xxxx
+nexus_droplet_ip_address=139.59.136.189
+npm_repo_name=npm
+
+# save the artifact details in a json file
+curl -u ${repo_user_name}:${repo_user_password} -X GET "http://${nexus_droplet_ip_address}:8081/service/rest/v1/components?repository=${npm_repo_name}&sort=version" | jq . > components.json
+
+# grab the download url from the saved artifact details using 'jq' json processor tool
+downloadUrl=$(jq .items[0].assets[0].downloadUrl components.json --raw-output)
+
+# fetch the artifact with the extracted download url using 'wget' tool
+wget --http-user=${repo_user_name} --http-password=${repo_user_password} ${downloadUrl}
+
+# unpack the downloaded tar file (z=unzip and x=untar)
+tar zxvf bootcamp-node-project-1.0.0.tgz
+
+# switch to package directory
+cd package
+
+# install dependencies
+npm install
+
+# run the application in detached mode
+node server.js &
+```
+
+Execute `chmod u+x download-and-start-nodejs-app.sh` and run the script.
 
 </details>
 
