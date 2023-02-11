@@ -432,10 +432,10 @@ curl -u ${repo_user_name}:${repo_user_password} -X GET "http://${nexus_droplet_i
 downloadUrl=$(jq .items[-1].assets[0].downloadUrl components.json --raw-output)
 
 # fetch the artifact with the extracted download url using 'wget' tool
-wget --http-user=${repo_user_name} --http-password=${repo_user_password} ${downloadUrl}
+wget --http-user=${repo_user_name} --http-password=${repo_user_password} ${downloadUrl} -O bootcamp-node-project-latest.tgz
 
 # unpack the downloaded tar file (z=unzip and x=untar)
-tar zxvf bootcamp-node-project-1.0.0.tgz
+tar zxvf bootcamp-node-project-latest.tgz
 
 # switch to package directory
 cd package
