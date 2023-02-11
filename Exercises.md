@@ -357,7 +357,7 @@ SSH into the droplet server created for module 5:\
 Execute the following command (replace the placeholders in `<...>` with their respective values):\
 `curl -u all-repo-reader:<all-repo-reader-password> -X GET 'http://<nexus-droplet-ip-address>:8081/service/rest/v1/components?repository=npm&sort=version'`
 
-The output contains one component with one asset. Copy its "downloadUrl" value.
+The output contains components with their assets. Copy the "downloadUrl" value of the required asset.
 
 Execute one of the following commands (replace the placeholders in `<...>` with their respective values):\
 `curl -u all-repo-reader:<all-repo-reader-password> -X GET '<download-url>' --output bootcamp-node-project-1.0.0.tgz`
@@ -427,8 +427,9 @@ npm_repo_name=npm
 # save the artifact details in a json file
 curl -u ${repo_user_name}:${repo_user_password} -X GET "http://${nexus_droplet_ip_address}:8081/service/rest/v1/components?repository=${npm_repo_name}&sort=version" | jq . > components.json
 
-# grab the download url from the saved artifact details using 'jq' json processor tool
-downloadUrl=$(jq .items[0].assets[0].downloadUrl components.json --raw-output)
+# grab the download url from the saved component details using 'jq' json processor tool
+# .items[-1] selects the last item
+downloadUrl=$(jq .items[-1].assets[0].downloadUrl components.json --raw-output)
 
 # fetch the artifact with the extracted download url using 'wget' tool
 wget --http-user=${repo_user_name} --http-password=${repo_user_password} ${downloadUrl}
