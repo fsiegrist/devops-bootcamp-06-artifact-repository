@@ -35,7 +35,7 @@ Switch to the nexus user and start Nexus:
 - `/opt/nexus-3.46.0-01/bin/nexus start`
 
 Check the port on which Nexus is running:
-- `ps aux | nexus` shows the PID
+- `ps aux | grep nexus` shows the PID
 - `netstat -tlnp` shows that the process with the nexus PID is listening on port 8081
 
 So go to the DigitalOcean admin webpage and add a firewall rule opening the port 8081 for all IP addresses.
