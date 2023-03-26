@@ -1,3 +1,6 @@
+## Exercises
+<br />
+
 You and other teams in 2 different projects in your company see at some point, that they have many different small projects, the NodeJS application you built in the previous step, the java-gradle helper application and so on. So you discuss and decide it will be good to be able to keep all these app artifacts in 1 place, where each team can keep their app artifacts and can access them when they need.
 
 So they ask you to setup Nexus in the company and create repositories for 2 different projects.
