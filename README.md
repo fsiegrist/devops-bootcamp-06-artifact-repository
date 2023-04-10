@@ -4,19 +4,7 @@
 
 This project contains notes related to the videos and exercises in Module 06 "Artifact Repository Manager with Nexus" of Nana Janashia's [DevOps Bootcamp](https://www.techworld-with-nana.com/devops-bootcamp).
 
-### Topics of the Demo Project
-Run Nexus on Droplet and Publish Artifact to Nexus
+It also contains the following demo project:
+- [Publish to Nexus on DigitalOcean server](./demo-project/1-publish-to-nexus-on-droplet/)
 
-### Technologies Used
-- Nexus
-- DigitalOcean
-- Linux
-- Java
-- Gradle
-- Maven
-
-### Project Description
-- Install and configure Nexus from scratch on a cloud server
-- Create new User on Nexus with relevant permissions
-- Java Gradle Project: Build Jar & Upload to Nexus
-- Java Maven Project: Build Jar & Upload to Nexus
+The demo project shows how to build a Java application and deploy it to Nexus using Gradle and Maven. There are two [sample applications](./demo-project/1-publish-to-nexus-on-droplet/sample-apps/) included in the demo project.

@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+group 'com.example'
+version '1.0.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+publishing {
+    publications { // what do we want to publish
+        mavenJava(MavenPublication) {
+            artifact("build/libs/java-gradle-app-$version" + ".jar") {
+                extension 'jar'
+            }
+        }
+    }
+    repositories { // where do we want to publish to
+        maven {
+            name 'nexus'
+            def releasesRepoUrl = 'http://139.59.136.189:8081/repository/maven-releases/'
+            def snapshotsRepoUrl = 'http://139.59.136.189:8081/repository/maven-repo/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            allowInsecureProtocol = true       // because we use http
+            credentials {
+                username project.repoUser      // to be defined in gradle.properties
+                password project.repoPassword  // to be defined in gradle.properties
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '5.2'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
