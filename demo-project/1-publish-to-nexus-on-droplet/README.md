@@ -21,14 +21,15 @@ Run Nexus on Droplet and Publish Artifact to Nexus
 **Step 1:** Create a Droplet on DigitalOcean\
 Login to your account on [DigitalOcean](https://cloud.digitalocean.com/login) and create a new Droplet having at least 4GB RAM (better 8GB). Create a firewall rule opening the ports 22 for SSH.
 
-**Step 2:** Install Java
+**Step 2:** Install Java and net-tools
 ```sh
 # SSH into the server
 ssh root@<droplet-ip-address>
 
-# install Java version 8 (needed for Nexus):
+# install Java version 8 (needed for Nexus) and net-tools (needed for the netstat command):
 apt update
 apt install openjdk-8-jre-headless
+apt install net-tools
 ```
 
 **Step 3:** Install Nexus
@@ -58,7 +59,7 @@ su - nexus
 /opt/nexus-3.46.0-01/bin/nexus start
 
 # check the port on which Nexus is running
-ps aux | grep nexus shows
+ps aux | grep nexus # shows the PID of the nexus process
 netstat -tlnp # shows that the process with the nexus PID is listening on port 8081
 ```
 
